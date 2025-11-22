@@ -4,17 +4,22 @@ A mobile application for helping animals in need and connecting them with loving
 
 ## Quick Start
 
+**Important:** Make sure you're in the `Four-Paws-of-Hope-Mobile` directory before running commands.
+
 ```bash
+# Navigate to the mobile app directory
+cd Four-Paws-of-Hope-Mobile
+
 # Install dependencies
 npm install
 
 # Start Metro bundler
 npm start
 
-# Run on Android
+# In a separate terminal, run on Android
 npm run android
 
-# Run on iOS
+# Or run on iOS
 npm run ios
 
 # Run tests
