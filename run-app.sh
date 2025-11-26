@@ -31,8 +31,8 @@ METRO_PID=$!
 sleep 10
 
 # Check if Metro started
-if curl -s http://localhost:8081/status > /dev/null 2>&1; then
-    echo "   ✓ Metro bundler running on http://localhost:8081"
+if curl -s http://localhost:9088/status > /dev/null 2>&1; then
+    echo "   ✓ Metro bundler running on http://localhost:9088"
 else
     echo "   ⚠️  Metro bundler may still be starting..."
 fi
@@ -88,13 +88,20 @@ if [ "$DEVICE_READY" != "true" ]; then
 fi
 
 # Step 5: Set up port forwarding
-echo "✅ Step 5/6: Setting up port forwarding..."
-adb reverse tcp:8081 tcp:8081
-echo "   ✓ Port forwarding configured"
+echo "✅ Step 5/7: Setting up port forwarding..."
+adb reverse tcp:9088 tcp:9088
+adb reverse tcp:8081 tcp:8081  # Also forward default port as fallback
+echo "   ✓ Port forwarding configured (9088 and 8081)"
 
-# Step 6: Build and run the app
-echo "✅ Step 6/6: Building and installing app..."
+# Step 6: Clean build (optional but recommended)
+echo "✅ Step 6/7: Cleaning previous build..."
+cd android && ./gradlew clean > /dev/null 2>&1 || true
+cd ..
+
+# Step 7: Build and run the app
+echo "✅ Step 7/7: Building and installing app..."
 echo "   This may take 1-2 minutes..."
+export RCT_METRO_PORT=9088
 npm run android
 
 echo ""
@@ -104,12 +111,19 @@ echo ""
 echo "The Dashboard app should now be visible on your device/emulator."
 echo ""
 echo "If you see a blank screen:"
-echo "  - Shake the device/emulator (or press Cmd+M on Mac)"
-echo "  - Select 'Reload' from the dev menu"
+echo "  1. Shake the device/emulator (or press Cmd+M on Mac)"
+echo "  2. Select 'Reload' from the dev menu"
+echo "  3. Check Metro bundler is running: curl http://localhost:9088/status"
+echo "  4. Verify port forwarding: adb reverse --list"
 echo ""
-echo "Metro bundler is running in the background."
+echo "Metro bundler is running in the background on port 9088."
 echo "To stop Metro, run: pkill -f 'react-native start'"
+echo "To view Metro logs: tail -f /tmp/metro-bundler.log"
 echo ""
+
+
+
+
 
 
 

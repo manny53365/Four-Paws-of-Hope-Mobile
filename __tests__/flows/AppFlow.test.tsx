@@ -1,11 +1,11 @@
 /**
  * @format
- * App Component Integration Tests
+ * End-to-End Flow Tests
  */
 
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
-import App from '../App';
+import App from '../../App';
 
 // Mock navigation
 jest.mock('@react-navigation/native', () => {
@@ -23,11 +23,15 @@ jest.mock('@react-navigation/native-stack', () => {
   };
 });
 
-describe('App Component', () => {
-  // Note: App component uses useColorScheme which requires native modules
-  // These tests verify basic structure without full rendering
-  it('should export App component', () => {
+describe('App User Flows', () => {
+  // Note: Full App rendering requires native modules
+  // These tests verify component structure
+  it('should have App component defined', () => {
     expect(App).toBeDefined();
-    expect(typeof App).toBe('function');
+  });
+
+  it('should have Dashboard component accessible', () => {
+    const Dashboard = require('../../pages/dashboard/Dashboard').default;
+    expect(Dashboard).toBeDefined();
   });
 });

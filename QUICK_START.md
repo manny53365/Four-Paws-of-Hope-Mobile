@@ -26,6 +26,8 @@ npm start
 cd Four-Paws-of-Hope-Mobile
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+# Set up port forwarding for Metro (port 9088)
+adb reverse tcp:9088 tcp:9088
 npm run android
 ```
 
@@ -39,9 +41,24 @@ npm run android
 
 ## Troubleshooting
 
-- **Blank screen?** Shake device/emulator → Select "Reload"
-- **Metro not connecting?** Run: `adb reverse tcp:8081 tcp:8081`
-- **Build fails?** Run: `cd android && ./gradlew clean && cd ..`
+- **Blank screen?** 
+  - Shake device/emulator → Select "Reload"
+  - Check Metro bundler is running: `curl http://localhost:9088/status`
+  - Verify port forwarding: `adb reverse --list`
+  - Check Android logcat for errors: `adb logcat | grep -i "react\|error"`
+  
+- **Metro not connecting?** 
+  - Set up port forwarding: `adb reverse tcp:9088 tcp:9088`
+  - Ensure Metro is running on port 9088: `npm start`
+  - Check if port is already in use: `lsof -i :9088`
+  
+- **Build fails?** 
+  - Clean build: `cd android && ./gradlew clean && cd ..`
+  - Clear Metro cache: `npm start -- --reset-cache`
+  
+- **React version mismatch errors?**
+  - Ensure React version matches React Native: `react@19.1.0` for React Native 0.81.4
+  - Run `npm install` to sync dependencies
 
 
 
