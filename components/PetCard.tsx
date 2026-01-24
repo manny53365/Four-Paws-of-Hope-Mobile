@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 
 interface PetCardProps {
   Pet: {
@@ -13,6 +13,11 @@ interface PetCardProps {
 }
 
 export default function PetCard({ Pet }: PetCardProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  const styles = getStyles(isDark);
+
   return (
     <View style={styles.card}>
       <Image source={{ uri: Pet.image }} style={styles.image} />
@@ -37,12 +42,12 @@ export default function PetCard({ Pet }: PetCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
     overflow: 'hidden',
     marginBottom: 16,
     shadowColor: '#000',
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: isDark ? '#374151' : '#f3f4f6',
   },
   content: {
     padding: 16,
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: isDark ? '#ffffff' : '#1f2937',
     flex: 1,
   },
   statusBadge: {
@@ -94,26 +99,27 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
   },
   description: {
     fontSize: 14,
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
     marginBottom: 12,
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: isDark ? '#374151' : '#f3f4f6',
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#4b5563',
+    color: isDark ? '#d1d5db' : '#4b5563',
     fontSize: 14,
     fontWeight: '600',
   },
 });
+
 
 

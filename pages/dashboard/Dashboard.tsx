@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, useColorScheme } from 'react-native';
 import Filters from '../../components/Filters';
 import PetCard from '../../components/PetCard';
 import Pagination from '../../components/Pagination';
@@ -26,6 +26,10 @@ const mockPets = [
 ];
 
 export default function Dashboard() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const styles = getStyles(isDark);
+
   return (
     <ScrollView 
       style={styles.container} 
@@ -46,10 +50,10 @@ export default function Dashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: isDark ? '#111827' : '#f9fafb',
   },
   contentContainer: {
     padding: 16,
@@ -61,14 +65,4 @@ const styles = StyleSheet.create({
     gap: 16,
   },
 });
-
-
-
-
-
-
-
-
-
-
 

@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 
 export default function Filters() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'Lost' | 'Found' | 'All'>('All');
+  const [statusFilter, setStatusFilter] = useState<'Lost' | 'Found' | 'All'>('Lost');
   const [petTypes, setPetTypes] = useState<{ [key: string]: boolean }>({
     Dog: false,
     Cat: true,
     Bird: false,
     Other: false,
   });
+  const [statusExpanded, setStatusExpanded] = useState(true);
+  const [petTypeExpanded, setPetTypeExpanded] = useState(false);
 
   const togglePetType = (type: string) => {
     setPetTypes(prev => ({
@@ -17,6 +21,8 @@ export default function Filters() {
       [type]: !prev[type],
     }));
   };
+
+  const styles = getStyles(isDark);
 
   return (
     <View style={styles.container}>
@@ -29,64 +35,82 @@ export default function Filters() {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name, breed..."
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor={isDark ? '#6b7280' : '#9ca3af'}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Status</Text>
-        <View style={styles.radioGroup}>
-          <TouchableOpacity
-            style={[styles.radioOption, statusFilter === 'Lost' && styles.radioSelected]}
-            onPress={() => setStatusFilter('Lost')}
-          >
-            <View style={[styles.radioCircle, statusFilter === 'Lost' && styles.radioCircleSelected]} />
-            <Text style={styles.radioLabel}>Lost</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.radioOption, statusFilter === 'Found' && styles.radioSelected]}
-            onPress={() => setStatusFilter('Found')}
-          >
-            <View style={[styles.radioCircle, statusFilter === 'Found' && styles.radioCircleSelected]} />
-            <Text style={styles.radioLabel}>Found</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity 
+          style={styles.sectionHeader}
+          onPress={() => setStatusExpanded(!statusExpanded)}
+        >
+          <Text style={styles.sectionTitle}>Status</Text>
+          <Text style={styles.expandIcon}>{statusExpanded ? '▼' : '▶'}</Text>
+        </TouchableOpacity>
+        {statusExpanded && (
+          <View style={styles.radioGroup}>
+            <TouchableOpacity
+              style={[styles.radioOption, statusFilter === 'Lost' && styles.radioSelected]}
+              onPress={() => setStatusFilter('Lost')}
+            >
+              <View style={[styles.radioCircle, statusFilter === 'Lost' && styles.radioCircleSelected]} />
+              <Text style={styles.radioLabel}>Lost</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.radioOption, statusFilter === 'Found' && styles.radioSelected]}
+              onPress={() => setStatusFilter('Found')}
+            >
+              <View style={[styles.radioCircle, statusFilter === 'Found' && styles.radioCircleSelected]} />
+              <Text style={styles.radioLabel}>Found</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Pet Type</Text>
-        {['Dog', 'Cat', 'Bird', 'Other'].map(type => (
-          <TouchableOpacity
-            key={type}
-            style={styles.checkboxOption}
-            onPress={() => togglePetType(type)}
-          >
-            <View style={[styles.checkbox, petTypes[type] && styles.checkboxChecked]}>
-              {petTypes[type] && <Text style={styles.checkmark}>✓</Text>}
-            </View>
-            <Text style={styles.checkboxLabel}>{type}</Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity 
+          style={styles.sectionHeader}
+          onPress={() => setPetTypeExpanded(!petTypeExpanded)}
+        >
+          <Text style={styles.sectionTitle}>Pet Type</Text>
+          <Text style={styles.expandIcon}>{petTypeExpanded ? '▼' : '▶'}</Text>
+        </TouchableOpacity>
+        {petTypeExpanded && (
+          <>
+            {['Dog', 'Cat', 'Bird', 'Other'].map(type => (
+              <TouchableOpacity
+                key={type}
+                style={styles.checkboxOption}
+                onPress={() => togglePetType(type)}
+              >
+                <View style={[styles.checkbox, petTypes[type] && styles.checkboxChecked]}>
+                  {petTypes[type] && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+                <Text style={styles.checkboxLabel}>{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </>
+        )}
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
     padding: 16,
     marginBottom: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: isDark ? '#d1d5db' : '#1f2937',
     marginBottom: 16,
   },
   searchContainer: {
@@ -94,16 +118,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
     borderRadius: 8,
     overflow: 'hidden',
   },
   searchIconContainer: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: isDark ? '#374151' : '#f9fafb',
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderRightWidth: 1,
-    borderRightColor: '#e5e7eb',
+    borderRightColor: isDark ? '#374151' : '#e5e7eb',
   },
   searchIcon: {
     fontSize: 16,
@@ -113,19 +137,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 14,
-    color: '#1f2937',
+    color: isDark ? '#d1d5db' : '#1f2937',
+    backgroundColor: isDark ? '#111827' : '#ffffff',
   },
   section: {
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: isDark ? '#374151' : '#e5e7eb',
     paddingTop: 16,
     marginTop: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
-    marginBottom: 12,
+    color: isDark ? '#d1d5db' : '#374151',
+  },
+  expandIcon: {
+    fontSize: 12,
+    color: isDark ? '#9ca3af' : '#6b7280',
   },
   radioGroup: {
     gap: 12,
@@ -136,18 +170,18 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
   },
   radioSelected: {
     borderColor: '#3b82f6',
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
   },
   radioCircle: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#d1d5db',
+    borderColor: isDark ? '#4b5563' : '#d1d5db',
     marginRight: 12,
   },
   radioCircleSelected: {
@@ -157,7 +191,7 @@ const styles = StyleSheet.create({
   radioLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
   },
   checkboxOption: {
     flexDirection: 'row',
@@ -169,7 +203,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#d1d5db',
+    borderColor: isDark ? '#4b5563' : '#d1d5db',
     marginRight: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -186,15 +220,7 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
   },
 });
-
-
-
-
-
-
-
-
 

@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 
 export default function Pagination() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const currentPage = 1;
   const totalPages = 3;
+  
+  const styles = getStyles(isDark);
 
   return (
     <View style={styles.container}>
@@ -27,7 +31,7 @@ export default function Pagination() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -38,25 +42,25 @@ const styles = StyleSheet.create({
   button: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
     minWidth: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
     fontSize: 18,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     fontWeight: 'bold',
   },
   pageButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
     minWidth: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -67,19 +71,12 @@ const styles = StyleSheet.create({
   },
   pageText: {
     fontSize: 14,
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
     fontWeight: '500',
   },
   pageTextActive: {
     color: '#ffffff',
   },
 });
-
-
-
-
-
-
-
 
 
